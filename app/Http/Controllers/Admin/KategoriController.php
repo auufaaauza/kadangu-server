@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Pertunjukan;
-use App\Models\Seniman;
+use App\Models\ArtistGroup;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -26,8 +26,8 @@ class KategoriController extends Controller
     {
         $kategoriName = $this->kategoriMap[$kategori] ?? ucfirst($kategori);
         
-        $pertunjukans = Pertunjukan::with('seniman')
-            ->whereHas('seniman', function($query) use ($kategoriName) {
+        $pertunjukans = Pertunjukan::with('artistGroup')
+            ->whereHas('artistGroup', function($query) use ($kategoriName) {
                 $query->where('nama', 'LIKE', '%' . $kategoriName . '%');
             })
             ->orderBy('created_at', 'desc')
@@ -59,13 +59,13 @@ class KategoriController extends Controller
             'status' => 'required|in:active,inactive',
         ]);
 
-        // Auto-create seniman with kategori name
-        $seniman = Seniman::firstOrCreate(
+        // Auto-create artist group with kategori name
+        $artistGroup = ArtistGroup::firstOrCreate(
             ['nama' => $kategoriName],
             ['bio' => 'Kategori ' . $kategoriName, 'kategori' => $kategoriName]
         );
 
-        $validated['seniman_id'] = $seniman->id;
+        $validated['artist_group_id'] = $artistGroup->id;
         $validated['kuota_tersisa'] = $validated['kuota'];
 
         if ($request->hasFile('gambar')) {

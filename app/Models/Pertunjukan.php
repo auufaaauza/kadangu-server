@@ -20,7 +20,7 @@ class Pertunjukan extends Model
         'kuota',
         'kuota_tersisa',
         'gambar',
-        'seniman_id',
+        'artist_group_id',
         'status',
     ];
 
@@ -30,11 +30,11 @@ class Pertunjukan extends Model
     ];
 
     /**
-     * Get the seniman for this pertunjukan
+     * Get the artist group for this pertunjukan
      */
-    public function seniman()
+    public function artistGroup()
     {
-        return $this->belongsTo(Seniman::class);
+        return $this->belongsTo(ArtistGroup::class, 'artist_group_id');
     }
 
     /**

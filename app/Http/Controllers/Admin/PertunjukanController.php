@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Pertunjukan;
-use App\Models\Seniman;
+use App\Models\ArtistGroup;
 use App\Models\TicketCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -13,7 +13,7 @@ class PertunjukanController extends Controller
 {
     public function index()
     {
-        $pertunjukans = Pertunjukan::with(['seniman', 'ticketCategories'])
+        $pertunjukans = Pertunjukan::with(['artistGroup', 'ticketCategories'])
             ->orderBy('created_at', 'desc')
             ->paginate(15);
         
@@ -27,7 +27,7 @@ class PertunjukanController extends Controller
 
     public function show(Pertunjukan $pertunjukan)
     {
-        $pertunjukan->load(['seniman', 'ticketCategories']);
+        $pertunjukan->load(['artistGroup', 'ticketCategories']);
         
         $bookings = $pertunjukan->bookings()
             ->with(['user', 'ticketCategory', 'transaction'])
@@ -57,12 +57,12 @@ class PertunjukanController extends Controller
         ]);
 
         // Find or create seniman
-        $seniman = Seniman::firstOrCreate(
+        $artistGroup = ArtistGroup::firstOrCreate(
             ['nama' => $validated['seniman_nama']],
             ['bio' => '', 'kategori' => 'Umum']
         );
 
-        $validated['seniman_id'] = $seniman->id;
+        $validated['artist_group_id'] = $artistGroup->id;
         
         // Calculate total kuota from all categories
         $totalKuota = collect($validated['ticket_categories'])->sum('kuota');
@@ -118,13 +118,13 @@ class PertunjukanController extends Controller
             'ticket_categories.*.deskripsi' => 'nullable|string',
         ]);
 
-        // Find or create seniman
-        $seniman = Seniman::firstOrCreate(
+        // Find or create artist group
+        $artistGroup = ArtistGroup::firstOrCreate(
             ['nama' => $validated['seniman_nama']],
             ['bio' => '', 'kategori' => 'Umum']
         );
 
-        $validated['seniman_id'] = $seniman->id;
+        $validated['artist_group_id'] = $artistGroup->id;
         
         // Calculate total kuota from all categories
         $totalKuota = collect($validated['ticket_categories'])->sum('kuota');

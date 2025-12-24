@@ -3,15 +3,21 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PertunjukanController as AdminPertunjukanController;
-use App\Http\Controllers\Admin\SenimanController as AdminSenimanController;
+
 use App\Http\Controllers\Admin\BeritaController as AdminBeritaController;
 use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Admin\TransactionController as AdminTransactionController;
+use App\Http\Controllers\Admin\BannerController as AdminBannerController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
-    return view('welcome');
+    // Redirect to admin login if already authenticated as admin
+    if (Auth::check() && Auth::user()->isAdmin()) {
+        return redirect()->route('admin.dashboard');
+    }
+    // Redirect to login page for non-authenticated users
+    return redirect()->route('login');
 });
 
 Route::get('/dashboard', function () {
@@ -32,8 +38,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
     Route::resource('pertunjukan', AdminPertunjukanController::class);
-    Route::resource('seniman', AdminSenimanController::class);
+
     Route::resource('berita', AdminBeritaController::class);
+    Route::resource('banner', AdminBannerController::class);
     
     Route::get('/booking', [AdminBookingController::class, 'index'])->name('booking.index');
     Route::get('/booking/{booking}', [AdminBookingController::class, 'show'])->name('booking.show');

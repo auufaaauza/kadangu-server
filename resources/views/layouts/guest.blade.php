@@ -35,7 +35,7 @@
             position: absolute;
             width: 500px;
             height: 500px;
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(13, 148, 136, 0.15) 0%, transparent 70%);
             top: -250px;
             left: -250px;
             animation: float 20s infinite ease-in-out;
@@ -46,7 +46,7 @@
             position: absolute;
             width: 400px;
             height: 400px;
-            background: radial-gradient(circle, rgba(236, 72, 153, 0.15) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(20, 184, 166, 0.15) 0%, transparent 70%);
             bottom: -200px;
             right: -200px;
             animation: float 15s infinite ease-in-out reverse;
@@ -70,7 +70,7 @@
             backdrop-filter: blur(20px);
             border-radius: 24px;
             padding: 48px 40px;
-            border: 1px solid rgba(139, 92, 246, 0.2);
+            border: 1px solid rgba(13, 148, 136, 0.2);
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
         }
         
@@ -83,22 +83,20 @@
             width: 80px;
             height: 80px;
             margin: 0 auto 16px;
-            background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
+            background: #0d9488;
             border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 36px;
             color: white;
-            box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
+            box-shadow: 0 8px 24px rgba(13, 148, 136, 0.4);
         }
         
         .logo-text {
             font-size: 28px;
             font-weight: 700;
-            background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #0d9488;
             margin-bottom: 8px;
         }
         
@@ -123,7 +121,7 @@
             width: 100%;
             padding: 14px 16px;
             background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(139, 92, 246, 0.2);
+            border: 1px solid rgba(13, 148, 136, 0.2);
             border-radius: 12px;
             color: white;
             font-size: 15px;
@@ -132,8 +130,8 @@
         
         .form-input:focus {
             outline: none;
-            border-color: #8B5CF6;
-            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+            border-color: #0d9488;
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
         }
         
         .form-input::placeholder {
@@ -151,14 +149,14 @@
             width: 18px;
             height: 18px;
             border-radius: 6px;
-            border: 2px solid rgba(139, 92, 246, 0.3);
+            border: 2px solid rgba(13, 148, 136, 0.3);
             background: rgba(15, 23, 42, 0.6);
             cursor: pointer;
         }
         
         .checkbox:checked {
-            background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
-            border-color: #8B5CF6;
+            background: #0d9488;
+            border-color: #0d9488;
         }
         
         .checkbox-label {
@@ -170,7 +168,7 @@
         .btn-primary {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
+            background: #0d9488;
             color: white;
             font-size: 15px;
             font-weight: 600;
@@ -178,12 +176,13 @@
             border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
         }
         
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+            background: #0f766e;
+            box-shadow: 0 8px 20px rgba(13, 148, 136, 0.4);
         }
         
         .forgot-password {
@@ -192,7 +191,7 @@
         }
         
         .forgot-password a {
-            color: #8B5CF6;
+            color: #14b8a6;
             text-decoration: none;
             font-size: 14px;
             font-weight: 500;
@@ -200,7 +199,7 @@
         }
         
         .forgot-password a:hover {
-            color: #EC4899;
+            color: #0d9488;
         }
         
         .error-message {

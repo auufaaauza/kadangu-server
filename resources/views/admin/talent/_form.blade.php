@@ -22,15 +22,15 @@
         <label class="form-label">
             Kategori <span class="required">*</span>
         </label>
-        <select name="seniman_id" class="form-input" required>
+        <select name="artist_group_id" class="form-input" required>
             <option value="">Pilih Kategori</option>
-            @foreach($senimans as $seniman)
-                <option value="{{ $seniman->id }}" {{ old('seniman_id', $talent->seniman_id ?? '') == $seniman->id ? 'selected' : '' }}>
-                    {{ $seniman->nama }}
+            @foreach($artistGroups as $artistGroup)
+                <option value="{{ $artistGroup->id }}" {{ old('artist_group_id', $talent->artist_group_id ?? '') == $artistGroup->id ? 'selected' : '' }}>
+                    {{ $artistGroup->nama }}
                 </option>
             @endforeach
         </select>
-        @error('seniman_id')
+        @error('artist_group_id')
         <span class="form-error">{{ $message }}</span>
         @enderror
     </div>

@@ -15,7 +15,7 @@ class BookingController extends Controller
      */
     public function index(Request $request)
     {
-        $bookings = Booking::with(['pertunjukan.seniman', 'transaction'])
+        $bookings = Booking::with(['pertunjukan.artistGroup', 'transaction'])
             ->where('user_id', $request->user()->id)
             ->orderBy('created_at', 'desc')
             ->paginate(10);
@@ -30,15 +30,17 @@ class BookingController extends Controller
     {
         $request->validate([
             'pertunjukan_id' => 'required|exists:pertunjukans,id',
+            'ticket_category_id' => 'required|exists:ticket_categories,id',
             'jumlah_tiket' => 'required|integer|min:1',
         ]);
 
         $pertunjukan = Pertunjukan::findOrFail($request->pertunjukan_id);
+        $category = $pertunjukan->ticketCategories()->findOrFail($request->ticket_category_id);
 
-        // Check if enough quota available
-        if ($pertunjukan->kuota_tersisa < $request->jumlah_tiket) {
+        // Check if enough quota available in category
+        if ($category->kuota_tersisa < $request->jumlah_tiket) {
             return response()->json([
-                'message' => 'Kuota tiket tidak mencukupi'
+                'message' => 'Kuota tiket kategori ini tidak mencukupi'
             ], 400);
         }
 
@@ -48,19 +50,21 @@ class BookingController extends Controller
             $booking = Booking::create([
                 'user_id' => $request->user()->id,
                 'pertunjukan_id' => $request->pertunjukan_id,
+                'ticket_category_id' => $request->ticket_category_id,
                 'jumlah_tiket' => $request->jumlah_tiket,
-                'total_harga' => $pertunjukan->harga * $request->jumlah_tiket,
+                'total_harga' => $category->harga * $request->jumlah_tiket,
                 'status' => 'pending',
             ]);
 
             // Update kuota
+            $category->decrement('kuota_tersisa', $request->jumlah_tiket);
             $pertunjukan->decrement('kuota_tersisa', $request->jumlah_tiket);
 
             DB::commit();
 
             return response()->json([
                 'message' => 'Booking berhasil dibuat',
-                'booking' => $booking->load('pertunjukan.seniman')
+                'booking' => $booking->load('pertunjukan.artistGroup', 'ticketCategory')
             ], 201);
 
         } catch (\Exception $e) {
@@ -77,7 +81,7 @@ class BookingController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $booking = Booking::with(['pertunjukan.seniman', 'transaction'])
+        $booking = Booking::with(['pertunjukan.artistGroup', 'ticketCategory', 'transaction'])
             ->where('user_id', $request->user()->id)
             ->findOrFail($id);
 

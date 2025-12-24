@@ -31,7 +31,7 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
         
-        $upcomingShows = Pertunjukan::with('seniman')
+        $upcomingShows = Pertunjukan::with('artistGroup')
             ->where('status', 'active')
             ->where('tanggal_pertunjukan', '>=', now())
             ->orderBy('tanggal_pertunjukan', 'asc')

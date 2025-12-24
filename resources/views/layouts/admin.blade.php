@@ -13,8 +13,8 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/css/admin.css', 'resources/js/app.js'])
+    <!-- Admin CSS -->
+    <link rel="stylesheet" href="{{ asset('css/admin-global.css') }}">
     
     <style>
         * {
@@ -37,7 +37,7 @@
             height: 100vh;
             width: 280px;
             background: linear-gradient(180deg, #1E293B 0%, #0F172A 100%);
-            border-right: 1px solid rgba(139, 92, 246, 0.1);
+            border-right: 1px solid rgba(13, 148, 136, 0.2);
             overflow-y: auto;
             z-index: 1000;
             transition: all 0.3s ease;
@@ -52,8 +52,12 @@
         }
         
         .sidebar::-webkit-scrollbar-thumb {
-            background: linear-gradient(180deg, #8B5CF6 0%, #EC4899 100%);
+            background: #2d9d91;
             border-radius: 10px;
+        }
+        
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: #0f766e;
         }
         
         .sidebar-header {
@@ -129,7 +133,7 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
+            background: #2d9d91; /* Tosca */
             opacity: 0;
             transition: opacity 0.3s ease;
         }
@@ -146,7 +150,7 @@
         
         .menu-item.active {
             color: white;
-            background: rgba(139, 92, 246, 0.1);
+            background: rgba(45, 157, 145, 0.1); /* Tosca with opacity */
         }
         
         .menu-icon {
@@ -160,7 +164,7 @@
         }
         
         .menu-item.active .menu-icon {
-            color: #EC4899;
+            color: #5fb3a9; /* Light Tosca */
         }
         
         .menu-text {
@@ -350,6 +354,10 @@
                     <span class="menu-icon"><i class="fas fa-newspaper"></i></span>
                     <span class="menu-text">Berita</span>
                 </a>
+                <a href="{{ route('admin.banner.index') }}" class="menu-item {{ request()->routeIs('admin.banner.*') ? 'active' : '' }}">
+                    <span class="menu-icon"><i class="fas fa-image"></i></span>
+                    <span class="menu-text">Banner</span>
+                </a>
             </div>
             
             <div class="menu-section">
@@ -463,6 +471,11 @@
         </div>
     </main>
     
+    <!-- Dark Mode Toggle -->
+    <button class="dark-mode-toggle" id="darkModeToggle" title="Toggle Dark Mode">
+        <i class="fas fa-moon" id="darkModeIcon"></i>
+    </button>
+    
     <script>
         // Mobile sidebar toggle
         const sidebar = document.getElementById('sidebar');
@@ -481,4 +494,35 @@
                 sidebar.classList.remove('active');
             }
         });
+        
+        // Dark Mode Toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const darkModeIcon = document.getElementById('darkModeIcon');
+        const body = document.body;
+        
+        // Check for saved theme preference or default to dark mode
+        const currentTheme = localStorage.getItem('theme') || 'dark';
+        
+        // Apply saved theme
+        if (currentTheme === 'light') {
+            body.classList.add('light-mode');
+            darkModeIcon.classList.remove('fa-moon');
+            darkModeIcon.classList.add('fa-sun');
+        }
+        
+        // Toggle dark mode
+        darkModeToggle.addEventListener('click', function() {
+            body.classList.toggle('light-mode');
+            
+            if (body.classList.contains('light-mode')) {
+                darkModeIcon.classList.remove('fa-moon');
+                darkModeIcon.classList.add('fa-sun');
+                localStorage.setItem('theme', 'light');
+            } else {
+                darkModeIcon.classList.remove('fa-sun');
+                darkModeIcon.classList.add('fa-moon');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
     </script>
+

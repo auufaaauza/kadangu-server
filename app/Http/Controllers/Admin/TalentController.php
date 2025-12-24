@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Talent;
-use App\Models\Seniman;
+use App\Models\ArtistGroup;
 use App\Models\TalentPackage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -13,7 +13,7 @@ class TalentController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Talent::with(['seniman', 'packages', 'bookings']);
+        $query = Talent::with(['artistGroup', 'packages', 'bookings']);
 
         // Search
         if ($request->has('search') && $request->search != '') {
@@ -22,30 +22,30 @@ class TalentController extends Controller
 
         // Filter by kategori
         if ($request->has('kategori') && $request->kategori != '') {
-            $query->whereHas('seniman', function($q) use ($request) {
+            $query->whereHas('artistGroup', function($q) use ($request) {
                 $q->where('id', $request->kategori);
             });
         }
 
         $talents = $query->orderBy('created_at', 'desc')->paginate(15);
         // Only show art/seni categories for talents
-        $senimans = Seniman::whereIn('nama', ['Musik', 'Tari', 'Teater', 'Seni Rupa', 'Sastra', 'Film'])->get();
+        $artistGroups = ArtistGroup::whereIn('nama', ['Musik', 'Tari', 'Teater', 'Seni Rupa', 'Sastra', 'Film'])->get();
 
-        return view('admin.talent.index', compact('talents', 'senimans'));
+        return view('admin.talent.index', compact('talents', 'artistGroups'));
     }
 
     public function create()
     {
         // Only show art/seni categories for talents
-        $senimans = Seniman::whereIn('nama', ['Musik', 'Tari', 'Teater', 'Seni Rupa', 'Sastra', 'Film'])->get();
-        return view('admin.talent.create', compact('senimans'));
+        $artistGroups = ArtistGroup::whereIn('nama', ['Musik', 'Tari', 'Teater', 'Seni Rupa', 'Sastra', 'Film'])->get();
+        return view('admin.talent.create', compact('artistGroups'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'seniman_id' => 'required|exists:senimans,id',
+            'artist_group_id' => 'required|exists:artist_groups,id',
             'bio' => 'required|string',
             'genre' => 'required|string|max:100',
             'base_price' => 'required|numeric|min:0',
@@ -109,7 +109,7 @@ class TalentController extends Controller
 
     public function show($id)
     {
-        $talent = Talent::with(['seniman', 'packages', 'bookings.user', 'bookings.package'])
+        $talent = Talent::with(['artistGroup', 'packages', 'bookings.user', 'bookings.package'])
             ->findOrFail($id);
 
         return view('admin.talent.show', compact('talent'));
@@ -119,9 +119,9 @@ class TalentController extends Controller
     {
         $talent = Talent::with('packages')->findOrFail($id);
         // Only show art/seni categories for talents
-        $senimans = Seniman::whereIn('nama', ['Musik', 'Tari', 'Teater', 'Seni Rupa', 'Sastra', 'Film'])->get();
+        $artistGroups = ArtistGroup::whereIn('nama', ['Musik', 'Tari', 'Teater', 'Seni Rupa', 'Sastra', 'Film'])->get();
         
-        return view('admin.talent.edit', compact('talent', 'senimans'));
+        return view('admin.talent.edit', compact('talent', 'artistGroups'));
     }
 
     public function update(Request $request, $id)
@@ -130,7 +130,7 @@ class TalentController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'seniman_id' => 'required|exists:senimans,id',
+            'artist_group_id' => 'required|exists:artist_groups,id',
             'bio' => 'required|string',
             'genre' => 'required|string|max:100',
             'base_price' => 'required|numeric|min:0',

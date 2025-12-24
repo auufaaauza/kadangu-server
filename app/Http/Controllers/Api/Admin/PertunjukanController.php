@@ -14,7 +14,7 @@ class PertunjukanController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Pertunjukan::with('seniman');
+        $query = Pertunjukan::with('artistGroup');
 
         if ($request->has('status')) {
             $query->where('status', $request->status);
@@ -38,7 +38,7 @@ class PertunjukanController extends Controller
             'lokasi' => 'required|string',
             'harga' => 'required|numeric|min:0',
             'kuota' => 'required|integer|min:1',
-            'seniman_id' => 'required|exists:senimans,id',
+            'artist_group_id' => 'required|exists:artist_groups,id',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'status' => 'nullable|in:active,inactive',
         ]);
@@ -54,7 +54,7 @@ class PertunjukanController extends Controller
 
         return response()->json([
             'message' => 'Pertunjukan berhasil dibuat',
-            'pertunjukan' => $pertunjukan->load('seniman')
+            'pertunjukan' => $pertunjukan->load('artistGroup')
         ], 201);
     }
 
@@ -63,7 +63,7 @@ class PertunjukanController extends Controller
      */
     public function show($id)
     {
-        $pertunjukan = Pertunjukan::with('seniman', 'bookings')->findOrFail($id);
+        $pertunjukan = Pertunjukan::with('artistGroup', 'bookings')->findOrFail($id);
         return response()->json($pertunjukan);
     }
 
@@ -81,7 +81,7 @@ class PertunjukanController extends Controller
             'lokasi' => 'sometimes|string',
             'harga' => 'sometimes|numeric|min:0',
             'kuota' => 'sometimes|integer|min:1',
-            'seniman_id' => 'sometimes|exists:senimans,id',
+            'artist_group_id' => 'sometimes|exists:artist_groups,id',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'status' => 'sometimes|in:active,inactive',
         ]);
@@ -106,7 +106,7 @@ class PertunjukanController extends Controller
 
         return response()->json([
             'message' => 'Pertunjukan berhasil diupdate',
-            'pertunjukan' => $pertunjukan->load('seniman')
+            'pertunjukan' => $pertunjukan->load('artistGroup')
         ]);
     }
 

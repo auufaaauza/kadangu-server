@@ -39,7 +39,7 @@ class TalentBookingController extends Controller
 
     public function show($id)
     {
-        $booking = TalentBooking::with(['user', 'talent.seniman', 'package'])
+        $booking = TalentBooking::with(['user', 'talent.artistGroup', 'package'])
             ->findOrFail($id);
 
         return view('admin.talent-booking.show', compact('booking'));

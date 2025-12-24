@@ -49,7 +49,7 @@ class DashboardController extends Controller
                 ->get(),
             
             // Upcoming pertunjukans
-            'upcoming_pertunjukans' => Pertunjukan::with('seniman')
+            'upcoming_pertunjukans' => Pertunjukan::with('artistGroup')
                 ->where('status', 'active')
                 ->where('tanggal_pertunjukan', '>=', now())
                 ->orderBy('tanggal_pertunjukan', 'asc')
@@ -57,7 +57,7 @@ class DashboardController extends Controller
                 ->get(),
             
             // Popular pertunjukans (most bookings)
-            'popular_pertunjukans' => Pertunjukan::with('seniman')
+            'popular_pertunjukans' => Pertunjukan::with('artistGroup')
                 ->withCount('bookings')
                 ->orderBy('bookings_count', 'desc')
                 ->limit(5)

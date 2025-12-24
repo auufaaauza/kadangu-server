@@ -82,7 +82,7 @@
                 </div>
                 <div style="display: flex; justify-content: space-between;">
                     <strong style="color: #94A3B8;">Kategori:</strong>
-                    <span style="color: #CBD5E1;">{{ $booking->talent->seniman->nama }}</span>
+                    <span style="color: #CBD5E1;">{{ $booking->talent->artistGroup->nama }}</span>
                 </div>
                 <div style="display: flex; justify-content: space-between;">
                     <strong style="color: #94A3B8;">Genre:</strong>

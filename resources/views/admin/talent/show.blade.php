@@ -215,10 +215,10 @@
 
 <style>
 .talent-info-card {
-    background: white;
+    background: var(--bg-card);
     border-radius: 12px;
     padding: 30px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border: 1px solid var(--border-color);
     margin-bottom: 30px;
     display: grid;
     grid-template-columns: 250px 1fr;
@@ -235,7 +235,7 @@
 .no-photo-large {
     width: 100%;
     height: 250px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--primary);
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -262,11 +262,16 @@
 
 .detail-row strong {
     min-width: 180px;
-    color: #495057;
+    color: var(--text-secondary);
+}
+
+.detail-row span,
+.detail-row p {
+    color: var(--text-primary);
 }
 
 .price-tag {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    background: var(--primary);
     color: white;
     padding: 6px 16px;
     border-radius: 20px;
@@ -284,7 +289,7 @@
     aspect-ratio: 1;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border: 1px solid var(--border-color);
 }
 
 .portfolio-item-large img {
@@ -305,14 +310,20 @@
 }
 
 .package-detail-card {
-    background: #f8f9fa;
-    border: 2px solid #e9ecef;
+    background: var(--bg-card);
+    border: 2px solid var(--border-color);
     border-radius: 12px;
     overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.package-detail-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(45, 157, 145, 0.15);
 }
 
 .package-detail-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--primary);
     color: white;
     padding: 15px 20px;
     display: flex;
@@ -323,6 +334,7 @@
 .package-detail-header h4 {
     margin: 0;
     font-size: 18px;
+    color: white;
 }
 
 .package-detail-body {
@@ -332,18 +344,18 @@
 .package-price {
     font-size: 24px;
     font-weight: 700;
-    color: #f5576c;
+    color: var(--primary);
     margin-bottom: 10px;
 }
 
 .package-duration {
-    color: #6c757d;
+    color: var(--text-secondary);
     margin-bottom: 15px;
     font-size: 14px;
 }
 
 .package-description {
-    color: #495057;
+    color: var(--text-primary);
     margin-bottom: 15px;
     line-height: 1.6;
 }
@@ -351,7 +363,11 @@
 .package-includes {
     margin-top: 15px;
     padding-top: 15px;
-    border-top: 1px solid #dee2e6;
+    border-top: 1px solid var(--border-color);
+}
+
+.package-includes strong {
+    color: var(--text-primary);
 }
 
 .package-includes ul {
@@ -362,17 +378,28 @@
 
 .package-includes li {
     padding: 5px 0;
-    color: #495057;
+    color: var(--text-primary);
 }
 
 .package-includes li i {
-    color: #28a745;
+    color: var(--primary);
     margin-right: 8px;
 }
 
 .btn-sm {
     padding: 6px 12px;
     font-size: 13px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .talent-info-card {
+        grid-template-columns: 1fr;
+    }
+    
+    .packages-grid {
+        grid-template-columns: 1fr;
+    }
 }
 </style>
 @endsection

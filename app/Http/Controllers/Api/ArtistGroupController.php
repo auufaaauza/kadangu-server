@@ -3,17 +3,17 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Seniman;
+use App\Models\ArtistGroup;
 use Illuminate\Http\Request;
 
-class SenimanController extends Controller
+class ArtistGroupController extends Controller
 {
     /**
-     * Display a listing of senimans
+     * Display a listing of artist groups
      */
     public function index(Request $request)
     {
-        $query = Seniman::query();
+        $query = ArtistGroup::query();
 
         // Search by nama
         if ($request->has('search')) {
@@ -25,21 +25,21 @@ class SenimanController extends Controller
             $query->where('kategori', $request->kategori);
         }
 
-        $senimans = $query->paginate($request->get('per_page', 12));
+        $artistGroups = $query->paginate($request->get('per_page', 12));
 
-        return response()->json($senimans);
+        return response()->json($artistGroups);
     }
 
     /**
-     * Display the specified seniman with their pertunjukans
+     * Display the specified artist group with their pertunjukans
      */
     public function show($id)
     {
-        $seniman = Seniman::with(['pertunjukans' => function($query) {
+        $artistGroup = ArtistGroup::with(['pertunjukans' => function($query) {
             $query->where('status', 'active')
                   ->orderBy('tanggal_pertunjukan', 'asc');
         }])->findOrFail($id);
         
-        return response()->json($seniman);
+        return response()->json($artistGroup);
     }
 }

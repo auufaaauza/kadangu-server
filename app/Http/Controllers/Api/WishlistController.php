@@ -14,7 +14,7 @@ class WishlistController extends Controller
     public function index(Request $request)
     {
         $wishlists = Wishlist::where('user_id', $request->user()->id)
-            ->with(['talent', 'pertunjukan.seniman'])
+            ->with(['talent', 'pertunjukan.artistGroup'])
             ->orderBy('created_at', 'desc')
             ->get();
 

@@ -13,7 +13,7 @@ class Talent extends Model
     protected $table = 'talents';
 
     protected $fillable = [
-        'seniman_id',
+        'artist_group_id',
         'name',
         'slug',
         'bio',
@@ -49,9 +49,9 @@ class Talent extends Model
     }
 
     // Relationships
-    public function seniman()
+    public function artistGroup()
     {
-        return $this->belongsTo(Seniman::class);
+        return $this->belongsTo(ArtistGroup::class, 'artist_group_id');
     }
 
     public function packages()

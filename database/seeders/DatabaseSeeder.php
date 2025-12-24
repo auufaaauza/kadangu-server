@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use App\Models\Seniman;
+use App\Models\ArtistGroup;
 use App\Models\Pertunjukan;
 use App\Models\Berita;
 use Illuminate\Database\Seeder;
@@ -32,22 +32,22 @@ class DatabaseSeeder extends Seeder
             'role' => 'user',
         ]);
 
-        // Create senimans
-        $seniman1 = Seniman::create([
+        // Create artist groups
+        $artistGroup1 = ArtistGroup::create([
             'nama' => 'Ki Dalang Asep Sunandar',
             'bio' => 'Dalang wayang kulit profesional dengan pengalaman lebih dari 20 tahun',
             'kategori' => 'Wayang Kulit',
             'kontak' => '081234567890',
         ]);
 
-        $seniman2 = Seniman::create([
+        $artistGroup2 = ArtistGroup::create([
             'nama' => 'Sanggar Tari Mekar Sari',
             'bio' => 'Sanggar tari tradisional yang fokus pada tarian Jawa dan Sunda',
             'kategori' => 'Tari Tradisional',
             'kontak' => '081234567891',
         ]);
 
-        $seniman3 = Seniman::create([
+        $artistGroup3 = ArtistGroup::create([
             'nama' => 'Teater Koma',
             'bio' => 'Grup teater modern yang menggabungkan unsur tradisional dan kontemporer',
             'kategori' => 'Teater',
@@ -63,7 +63,7 @@ class DatabaseSeeder extends Seeder
             'harga' => 150000,
             'kuota' => 200,
             'kuota_tersisa' => 200,
-            'seniman_id' => $seniman1->id,
+            'artist_group_id' => $artistGroup1->id,
             'status' => 'active',
         ]);
 
@@ -75,7 +75,7 @@ class DatabaseSeeder extends Seeder
             'harga' => 100000,
             'kuota' => 150,
             'kuota_tersisa' => 150,
-            'seniman_id' => $seniman2->id,
+            'artist_group_id' => $artistGroup2->id,
             'status' => 'active',
         ]);
 
@@ -87,7 +87,7 @@ class DatabaseSeeder extends Seeder
             'harga' => 250000,
             'kuota' => 300,
             'kuota_tersisa' => 300,
-            'seniman_id' => $seniman3->id,
+            'artist_group_id' => $artistGroup3->id,
             'status' => 'active',
         ]);
 

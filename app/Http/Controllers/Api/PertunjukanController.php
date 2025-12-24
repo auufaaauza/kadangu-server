@@ -13,7 +13,7 @@ class PertunjukanController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Pertunjukan::with('seniman')->where('status', 'active');
+        $query = Pertunjukan::with('artistGroup')->where('status', 'active');
 
         // Search by judul or lokasi
         if ($request->has('search')) {
@@ -24,9 +24,9 @@ class PertunjukanController extends Controller
             });
         }
 
-        // Filter by seniman
-        if ($request->has('seniman_id')) {
-            $query->where('seniman_id', $request->seniman_id);
+        // Filter by artist group
+        if ($request->has('artist_group_id')) {
+            $query->where('artist_group_id', $request->artist_group_id);
         }
 
         // Filter by price range
@@ -60,7 +60,7 @@ class PertunjukanController extends Controller
      */
     public function show($id)
     {
-        $pertunjukan = Pertunjukan::with('seniman')->findOrFail($id);
+        $pertunjukan = Pertunjukan::with(['artistGroup', 'ticketCategories'])->findOrFail($id);
         
         return response()->json($pertunjukan);
     }

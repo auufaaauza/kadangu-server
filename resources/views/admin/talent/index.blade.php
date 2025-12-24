@@ -27,9 +27,9 @@
                 >
                 <select name="kategori" class="search-input" style="max-width: 200px;">
                     <option value="">Semua Kategori</option>
-                    @foreach($senimans as $seniman)
-                        <option value="{{ $seniman->id }}" {{ request('kategori') == $seniman->id ? 'selected' : '' }}>
-                            {{ $seniman->nama }}
+                    @foreach($artistGroups as $artistGroup)
+                        <option value="{{ $artistGroup->id }}" {{ request('kategori') == $artistGroup->id ? 'selected' : '' }}>
+                            {{ $artistGroup->nama }}
                         </option>
                     @endforeach
                 </select>
@@ -79,7 +79,7 @@
                                     </div>
                                 </div>
                             </td>
-                            <td>{{ $talent->seniman->nama }}</td>
+                            <td>{{ $talent->artistGroup->nama }}</td>
                             <td>
                                 <span class="badge badge-info">{{ $talent->genre }}</span>
                             </td>

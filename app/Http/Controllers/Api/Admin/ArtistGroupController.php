@@ -3,26 +3,26 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Seniman;
+use App\Models\ArtistGroup;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
-class SenimanController extends Controller
+class ArtistGroupController extends Controller
 {
     /**
-     * Display a listing of all senimans
+     * Display a listing of all artist groups
      */
     public function index(Request $request)
     {
-        $senimans = Seniman::withCount('pertunjukans')
+        $artistGroups = ArtistGroup::withCount('pertunjukans')
             ->orderBy('created_at', 'desc')
             ->paginate($request->get('per_page', 15));
 
-        return response()->json($senimans);
+        return response()->json($artistGroups);
     }
 
     /**
-     * Store a newly created seniman
+     * Store a newly created artist group
      */
     public function store(Request $request)
     {
@@ -37,32 +37,32 @@ class SenimanController extends Controller
         $data = $request->except('foto');
 
         if ($request->hasFile('foto')) {
-            $data['foto'] = $request->file('foto')->store('senimans', 'public');
+            $data['foto'] = $request->file('foto')->store('artist_groups', 'public');
         }
 
-        $seniman = Seniman::create($data);
+        $artistGroup = ArtistGroup::create($data);
 
         return response()->json([
-            'message' => 'Seniman berhasil dibuat',
-            'seniman' => $seniman
+            'message' => 'Artist group berhasil dibuat',
+            'artistGroup' => $artistGroup
         ], 201);
     }
 
     /**
-     * Display the specified seniman
+     * Display the specified artist group
      */
     public function show($id)
     {
-        $seniman = Seniman::with('pertunjukans')->findOrFail($id);
-        return response()->json($seniman);
+        $artistGroup = ArtistGroup::with('pertunjukans')->findOrFail($id);
+        return response()->json($artistGroup);
     }
 
     /**
-     * Update the specified seniman
+     * Update the specified artist group
      */
     public function update(Request $request, $id)
     {
-        $seniman = Seniman::findOrFail($id);
+        $artistGroup = ArtistGroup::findOrFail($id);
 
         $request->validate([
             'nama' => 'sometimes|string|max:255',
@@ -75,35 +75,35 @@ class SenimanController extends Controller
         $data = $request->except('foto');
 
         if ($request->hasFile('foto')) {
-            if ($seniman->foto) {
-                Storage::disk('public')->delete($seniman->foto);
+            if ($artistGroup->foto) {
+                Storage::disk('public')->delete($artistGroup->foto);
             }
-            $data['foto'] = $request->file('foto')->store('senimans', 'public');
+            $data['foto'] = $request->file('foto')->store('artist_groups', 'public');
         }
 
-        $seniman->update($data);
+        $artistGroup->update($data);
 
         return response()->json([
-            'message' => 'Seniman berhasil diupdate',
-            'seniman' => $seniman
+            'message' => 'Artist group berhasil diupdate',
+            'artistGroup' => $artistGroup
         ]);
     }
 
     /**
-     * Remove the specified seniman
+     * Remove the specified artist group
      */
     public function destroy($id)
     {
-        $seniman = Seniman::findOrFail($id);
+        $artistGroup = ArtistGroup::findOrFail($id);
 
-        if ($seniman->foto) {
-            Storage::disk('public')->delete($seniman->foto);
+        if ($artistGroup->foto) {
+            Storage::disk('public')->delete($artistGroup->foto);
         }
 
-        $seniman->delete();
+        $artistGroup->delete();
 
         return response()->json([
-            'message' => 'Seniman berhasil dihapus'
+            'message' => 'Artist group berhasil dihapus'
         ]);
     }
 }
