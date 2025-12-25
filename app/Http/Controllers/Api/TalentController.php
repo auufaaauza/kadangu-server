@@ -47,4 +47,25 @@ class TalentController extends Controller
         
         return response()->json($talent);
     }
+
+    /**
+     * Get top rated talents grouped by category
+     */
+    public function getTopRated()
+    {
+        $artistGroups = \App\Models\ArtistGroup::whereIn('nama', ['Musik', 'Tari', 'Teater', 'Seni Rupa'])
+            ->with(['talents' => function($query) {
+                $query->where('status', 'active')
+                      ->orderBy('rating', 'desc')
+                      ->limit(4);
+            }])
+            ->get();
+            
+        // Filter out groups with no talents
+        $result = $artistGroups->filter(function($group) {
+            return $group->talents->count() > 0;
+        })->values();
+
+        return response()->json($result);
+    }
 }

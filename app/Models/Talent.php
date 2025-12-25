@@ -18,6 +18,7 @@ class Talent extends Model
         'slug',
         'bio',
         'genre',
+        'rating',
         'base_price',
         'photo',
         'portfolio',
@@ -29,6 +30,7 @@ class Talent extends Model
     protected $casts = [
         'portfolio' => 'array',
         'base_price' => 'integer',
+        'rating' => 'float',
     ];
 
     protected static function boot()

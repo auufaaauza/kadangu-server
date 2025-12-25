@@ -13,7 +13,7 @@ class BookingController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Booking::with(['user', 'pertunjukan.seniman', 'transaction']);
+        $query = Booking::with(['user', 'pertunjukan.artistGroup', 'transaction']);
 
         // Filter by status
         if ($request->has('status')) {
@@ -47,7 +47,7 @@ class BookingController extends Controller
      */
     public function show($id)
     {
-        $booking = Booking::with(['user', 'pertunjukan.seniman', 'transaction'])
+        $booking = Booking::with(['user', 'pertunjukan.artistGroup', 'transaction'])
             ->findOrFail($id);
 
         return response()->json($booking);

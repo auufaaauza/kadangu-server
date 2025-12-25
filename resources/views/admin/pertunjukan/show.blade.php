@@ -3,7 +3,7 @@
 @section('content')
     <div class="page-header">
         <h1 class="page-title">{{ $pertunjukan->judul }}</h1>
-        <p class="page-subtitle">{{ $pertunjukan->seniman->nama }} • {{ $pertunjukan->tanggal_pertunjukan->format('d M Y, H:i') }}</p>
+        <p class="page-subtitle">{{ $pertunjukan->artistGroup?->nama }} • {{ $pertunjukan->tanggal_pertunjukan->format('d M Y, H:i') }}</p>
     </div>
     
     @if(session('success'))

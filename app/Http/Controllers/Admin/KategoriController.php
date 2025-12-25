@@ -51,12 +51,15 @@ class KategoriController extends Controller
             'deskripsi' => 'required|string',
             'tanggal_pertunjukan' => 'required|date',
             'lokasi' => 'required|string',
-            'harga' => 'required|numeric|min:0',
             'biaya_layanan' => 'required|numeric|min:0|max:100',
             'ppn' => 'required|numeric|min:0|max:100',
-            'kuota' => 'required|integer|min:1',
             'gambar' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'status' => 'required|in:active,inactive',
+            'status' => 'required|in:active,inactive,passed,coming_soon',
+            'ticket_categories' => 'required|array|min:1',
+            'ticket_categories.*.nama' => 'required|string|max:255',
+            'ticket_categories.*.harga' => 'required|numeric|min:0',
+            'ticket_categories.*.kuota' => 'required|integer|min:1',
+            'ticket_categories.*.deskripsi' => 'nullable|string',
         ]);
 
         // Auto-create artist group with kategori name
@@ -66,13 +69,32 @@ class KategoriController extends Controller
         );
 
         $validated['artist_group_id'] = $artistGroup->id;
-        $validated['kuota_tersisa'] = $validated['kuota'];
+        
+        // Calculate total kuota from all categories
+        $totalKuota = collect($validated['ticket_categories'])->sum('kuota');
+        $validated['kuota'] = $totalKuota;
+        $validated['kuota_tersisa'] = $totalKuota;
+        // Set minimum price as base price (optional, since harga is nullable/0 default)
+        $validated['harga'] = collect($validated['ticket_categories'])->min('harga');
+
+        unset($validated['ticket_categories']);
 
         if ($request->hasFile('gambar')) {
             $validated['gambar'] = $request->file('gambar')->store('pertunjukans', 'public');
         }
 
-        Pertunjukan::create($validated);
+        $pertunjukan = Pertunjukan::create($validated);
+
+        // Create ticket categories
+        foreach ($request->ticket_categories as $category) {
+            $pertunjukan->ticketCategories()->create([
+                'nama' => $category['nama'],
+                'harga' => $category['harga'],
+                'kuota' => $category['kuota'],
+                'kuota_tersisa' => $category['kuota'],
+                'deskripsi' => $category['deskripsi'] ?? null,
+            ]);
+        }
 
         return redirect()->route('admin.kategori.index', $kategori)
             ->with('success', ucfirst($kategoriName) . ' berhasil ditambahkan!');
@@ -96,18 +118,38 @@ class KategoriController extends Controller
             'deskripsi' => 'required|string',
             'tanggal_pertunjukan' => 'required|date',
             'lokasi' => 'required|string',
-            'harga' => 'required|numeric|min:0',
             'biaya_layanan' => 'required|numeric|min:0|max:100',
             'ppn' => 'required|numeric|min:0|max:100',
-            'kuota' => 'required|integer|min:1',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'status' => 'required|in:active,inactive',
+            'status' => 'required|in:active,inactive,passed,coming_soon',
+            'ticket_categories' => 'required|array|min:1',
+            'ticket_categories.*.id' => 'nullable|exists:ticket_categories,id',
+            'ticket_categories.*.nama' => 'required|string|max:255',
+            'ticket_categories.*.harga' => 'required|numeric|min:0',
+            'ticket_categories.*.kuota' => 'required|integer|min:1',
+            'ticket_categories.*.deskripsi' => 'nullable|string',
         ]);
 
-        if ($request->kuota != $pertunjukan->kuota) {
-            $diff = $request->kuota - $pertunjukan->kuota;
+        // Auto-create artist group with kategori name
+        $artistGroup = ArtistGroup::firstOrCreate(
+            ['nama' => $kategoriName],
+            ['bio' => 'Kategori ' . $kategoriName, 'kategori' => $kategoriName]
+        );
+
+        $validated['artist_group_id'] = $artistGroup->id;
+
+        // Calculate total kuota from all categories
+        $totalKuota = collect($validated['ticket_categories'])->sum('kuota');
+        $validated['kuota'] = $totalKuota;
+        $validated['harga'] = collect($validated['ticket_categories'])->min('harga');
+
+        // Update kuota_tersisa if kuota changed
+        if ($totalKuota != $pertunjukan->kuota) {
+            $diff = $totalKuota - $pertunjukan->kuota;
             $validated['kuota_tersisa'] = $pertunjukan->kuota_tersisa + $diff;
         }
+
+        unset($validated['ticket_categories']);
 
         if ($request->hasFile('gambar')) {
             if ($pertunjukan->gambar) {
@@ -117,6 +159,42 @@ class KategoriController extends Controller
         }
 
         $pertunjukan->update($validated);
+
+        // Sync ticket categories
+        $existingIds = [];
+        foreach ($request->ticket_categories as $category) {
+            if (isset($category['id']) && $category['id']) {
+                // Update existing category
+                $ticketCategory = \App\Models\TicketCategory::find($category['id']);
+                if ($ticketCategory) {
+                    $oldKuota = $ticketCategory->kuota;
+                    $newKuota = $category['kuota'];
+                    $diff = $newKuota - $oldKuota;
+                    
+                    $ticketCategory->update([
+                        'nama' => $category['nama'],
+                        'harga' => $category['harga'],
+                        'kuota' => $newKuota,
+                        'kuota_tersisa' => $ticketCategory->kuota_tersisa + $diff,
+                        'deskripsi' => $category['deskripsi'] ?? null,
+                    ]);
+                    $existingIds[] = $category['id'];
+                }
+            } else {
+                // Create new category
+                $newCategory = $pertunjukan->ticketCategories()->create([
+                    'nama' => $category['nama'],
+                    'harga' => $category['harga'],
+                    'kuota' => $category['kuota'],
+                    'kuota_tersisa' => $category['kuota'],
+                    'deskripsi' => $category['deskripsi'] ?? null,
+                ]);
+                $existingIds[] = $newCategory->id;
+            }
+        }
+        
+        // Delete categories that are no longer in the list
+        $pertunjukan->ticketCategories()->whereNotIn('id', $existingIds)->delete();
 
         return redirect()->route('admin.kategori.index', $kategori)
             ->with('success', ucfirst($kategoriName) . ' berhasil diupdate!');

@@ -17,6 +17,8 @@ class Booking extends Model
         'jumlah_tiket',
         'total_harga',
         'status',
+        'payment_method',
+        'snap_token',
         'kode_booking',
     ];
 

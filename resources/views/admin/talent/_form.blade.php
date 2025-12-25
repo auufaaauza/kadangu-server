@@ -53,6 +53,27 @@
         <span class="form-error">{{ $message }}</span>
         @enderror
     </div>
+
+    <!-- Rating -->
+    <div class="form-group">
+        <label class="form-label">
+            Rating (0 - 5)
+        </label>
+        <input 
+            type="number" 
+            name="rating" 
+            class="form-input" 
+            value="{{ old('rating', $talent->rating ?? '') }}"
+            placeholder="0.0"
+            min="0"
+            max="5"
+            step="0.1"
+        >
+        <span class="form-hint">Rating talent (opsional)</span>
+        @error('rating')
+        <span class="form-error">{{ $message }}</span>
+        @enderror
+    </div>
     
     <!-- Bio -->
     <div class="form-group full-width">
@@ -70,24 +91,7 @@
         @enderror
     </div>
     
-    <!-- Base Price -->
-    <div class="form-group">
-        <label class="form-label">
-            Harga Mulai Dari <span class="required">*</span>
-        </label>
-        <input 
-            type="text" 
-            name="base_price" 
-            class="form-input rupiah-input" 
-            value="{{ old('base_price', isset($talent) ? number_format($talent->base_price, 0, ',', '.') : '') }}"
-            placeholder="0"
-            required
-        >
-        <span class="form-hint">Harga dasar untuk talent ini</span>
-        @error('base_price')
-        <span class="form-error">{{ $message }}</span>
-        @enderror
-    </div>
+
     
     <!-- Service Description -->
     <div class="form-group">

@@ -46,7 +46,7 @@
             type="text" 
             name="seniman_nama" 
             class="form-input" 
-            value="{{ old('seniman_nama', request('kategori', isset($pertunjukan) ? $pertunjukan->seniman->nama : '')) }}"
+            value="{{ old('seniman_nama', request('kategori', isset($pertunjukan) ? $pertunjukan->artistGroup?->nama : '')) }}"
             placeholder="Contoh: Wayang Kulit, Tari Saman, Teater Koma"
             required
         >
@@ -188,8 +188,11 @@
             <option value="passed" {{ old('status', $pertunjukan->status ?? '') == 'passed' ? 'selected' : '' }}>
                 Passed
             </option>
+            <option value="coming_soon" {{ old('status', $pertunjukan->status ?? '') == 'coming_soon' ? 'selected' : '' }}>
+                Coming Soon
+            </option>
         </select>
-        <span class="form-hint">Active: Tampil & bisa dibeli | Inactive: Tidak tampil | Passed: Event sudah lewat (tampil tapi tidak bisa dibeli)</span>
+        <span class="form-hint">Active: Tampil & bisa dibeli | Inactive: Tidak tampil | Passed: Event sudah lewat | Coming Soon: Tampil tapi belum bisa dibeli</span>
         @error('status')
         <span class="form-error">{{ $message }}</span>
         @enderror

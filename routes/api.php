@@ -103,6 +103,7 @@ Route::get('/banners', [BannerController::class, 'index']);
 
 // Talents routes (using Talent model with English field names)
 Route::get('/talents', [TalentController::class, 'index']);
+Route::get('/talents/top-rated', [TalentController::class, 'getTopRated']);
 Route::get('/talents/{id}', [TalentController::class, 'show']);
 
 // Talent bookings

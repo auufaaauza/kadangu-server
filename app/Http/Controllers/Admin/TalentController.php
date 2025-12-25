@@ -29,7 +29,7 @@ class TalentController extends Controller
 
         $talents = $query->orderBy('created_at', 'desc')->paginate(15);
         // Only show art/seni categories for talents
-        $artistGroups = ArtistGroup::whereIn('nama', ['Musik', 'Tari', 'Teater', 'Seni Rupa', 'Sastra', 'Film'])->get();
+        $artistGroups = ArtistGroup::whereIn('nama', ['Musik', 'Tari', 'Teater', 'Seni Rupa', 'Sastra', 'Film', 'Budaya'])->get();
 
         return view('admin.talent.index', compact('talents', 'artistGroups'));
     }
@@ -37,7 +37,7 @@ class TalentController extends Controller
     public function create()
     {
         // Only show art/seni categories for talents
-        $artistGroups = ArtistGroup::whereIn('nama', ['Musik', 'Tari', 'Teater', 'Seni Rupa', 'Sastra', 'Film'])->get();
+        $artistGroups = ArtistGroup::whereIn('nama', ['Musik', 'Tari', 'Teater', 'Seni Rupa', 'Sastra', 'Film', 'Budaya'])->get();
         return view('admin.talent.create', compact('artistGroups'));
     }
 
@@ -48,7 +48,7 @@ class TalentController extends Controller
             'artist_group_id' => 'required|exists:artist_groups,id',
             'bio' => 'required|string',
             'genre' => 'required|string|max:100',
-            'base_price' => 'required|numeric|min:0',
+            'rating' => 'nullable|numeric|min:0|max:5',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'portfolio.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'service_description' => 'nullable|string',
@@ -77,8 +77,15 @@ class TalentController extends Controller
         }
         $validated['portfolio'] = $portfolioFiles;
 
-        // Remove rupiah formatting from base_price
-        $validated['base_price'] = (int) str_replace(['.', ',', 'Rp', ' '], '', $validated['base_price']);
+        // Calculate base_price from packages (lowest price)
+        $basePrice = 0;
+        if (isset($validated['packages']) && count($validated['packages']) > 0) {
+            $prices = array_map(function($pkg) {
+                return (int) str_replace(['.', ',', 'Rp', ' '], '', $pkg['price']);
+            }, $validated['packages']);
+            $basePrice = min($prices);
+        }
+        $validated['base_price'] = $basePrice;
 
         // Remove packages from validated data (we'll handle separately)
         $packages = $validated['packages'];
@@ -119,7 +126,7 @@ class TalentController extends Controller
     {
         $talent = Talent::with('packages')->findOrFail($id);
         // Only show art/seni categories for talents
-        $artistGroups = ArtistGroup::whereIn('nama', ['Musik', 'Tari', 'Teater', 'Seni Rupa', 'Sastra', 'Film'])->get();
+        $artistGroups = ArtistGroup::whereIn('nama', ['Musik', 'Tari', 'Teater', 'Seni Rupa', 'Sastra', 'Film', 'Budaya'])->get();
         
         return view('admin.talent.edit', compact('talent', 'artistGroups'));
     }
@@ -133,7 +140,7 @@ class TalentController extends Controller
             'artist_group_id' => 'required|exists:artist_groups,id',
             'bio' => 'required|string',
             'genre' => 'required|string|max:100',
-            'base_price' => 'required|numeric|min:0',
+            'rating' => 'nullable|numeric|min:0|max:5',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'portfolio.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'service_description' => 'nullable|string',
@@ -174,8 +181,15 @@ class TalentController extends Controller
             $validated['portfolio'] = $portfolioFiles;
         }
 
-        // Remove rupiah formatting from base_price
-        $validated['base_price'] = (int) str_replace(['.', ',', 'Rp', ' '], '', $validated['base_price']);
+        // Calculate base_price from packages (lowest price)
+        $basePrice = 0;
+        if (isset($request->packages) && count($request->packages) > 0) {
+            $prices = array_map(function($pkg) {
+                return (int) str_replace(['.', ',', 'Rp', ' '], '', $pkg['price']);
+            }, $request->packages);
+            $basePrice = min($prices);
+        }
+        $validated['base_price'] = $basePrice;
 
         // Update talent
         $talent->update($validated);

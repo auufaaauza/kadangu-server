@@ -261,7 +261,7 @@
                                 </div>
                             </div>
                         </td>
-                        <td>{{ $pertunjukan->seniman->nama }}</td>
+                        <td>{{ $pertunjukan->artistGroup?->nama }}</td>
                         <td>{{ $pertunjukan->tanggal_pertunjukan->format('d M Y') }}</td>
                         <td>{{ Str::limit($pertunjukan->lokasi, 20) }}</td>
                         <td>Rp {{ number_format($pertunjukan->harga, 0, ',', '.') }}</td>
