@@ -63,7 +63,7 @@
                         <td>{{ $booking->created_at->format('d M Y, H:i') }}</td>
                         <td>
                             <div class="action-buttons">
-                                <a href="{{ route('admin.pertunjukan.show', $booking->pertunjukan_id) }}" class="btn btn-secondary btn-sm" title="View Event">
+                                <a href="{{ route('admin.booking.show', $booking) }}" class="btn btn-info btn-sm" title="Lihat Detail Booking">
                                     <i class="fas fa-eye"></i>
                                 </a>
                                 <form action="{{ route('admin.booking.destroy', $booking) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus?')">

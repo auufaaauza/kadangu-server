@@ -18,6 +18,8 @@ class Booking extends Model
         'total_harga',
         'status',
         'payment_method',
+        'payment_status',
+        'payment_proof',
         'snap_token',
         'kode_booking',
     ];

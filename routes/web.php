@@ -46,6 +46,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/booking/{booking}', [AdminBookingController::class, 'show'])->name('booking.show');
     Route::patch('/booking/{booking}/status', [AdminBookingController::class, 'updateStatus'])->name('booking.updateStatus');
     Route::patch('/booking/{booking}/payment', [AdminBookingController::class, 'updatePayment'])->name('booking.update-payment');
+    Route::post('/booking/{booking}/validate', [AdminBookingController::class, 'validatePayment'])->name('booking.validatePayment');
     Route::delete('/booking/{booking}', [AdminBookingController::class, 'destroy'])->name('booking.destroy');
     Route::post('/booking/bulk-update-payment', [AdminBookingController::class, 'bulkUpdatePayment'])->name('booking.bulk-update-payment');
     Route::post('/booking/bulk-delete', [AdminBookingController::class, 'bulkDelete'])->name('booking.bulk-delete');
@@ -72,6 +73,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::post('/{id}/update-status', [\App\Http\Controllers\Admin\TalentBookingController::class, 'updateStatus'])->name('update-status');
         Route::delete('/{id}', [\App\Http\Controllers\Admin\TalentBookingController::class, 'destroy'])->name('destroy');
     });
+    
+    // Payment Settings Management
+    Route::resource('payment-settings', \App\Http\Controllers\Admin\PaymentSettingController::class);
+    Route::post('/payment-settings/{paymentSetting}/toggle', [\App\Http\Controllers\Admin\PaymentSettingController::class, 'toggleActive'])->name('payment-settings.toggle');
 });
 
 require __DIR__.'/auth.php';

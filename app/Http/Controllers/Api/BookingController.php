@@ -36,6 +36,7 @@ class BookingController extends Controller
             'ticket_category_id' => 'required|exists:ticket_categories,id',
             'jumlah_tiket' => 'required|integer|min:1',
             'payment_method' => 'required|in:manual,midtrans',
+            'payment_proof' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048', // 2MB max
         ]);
 
         $pertunjukan = Pertunjukan::findOrFail($request->pertunjukan_id);
@@ -52,6 +53,12 @@ class BookingController extends Controller
         try {
             $totalHarga = $category->harga * $request->jumlah_tiket;
             
+            // Handle payment proof upload
+            $paymentProofPath = null;
+            if ($request->hasFile('payment_proof')) {
+                $paymentProofPath = $request->file('payment_proof')->store('payment_proofs', 'public');
+            }
+
             // Create booking
             $booking = Booking::create([
                 'user_id' => $request->user()->id,
@@ -61,6 +68,8 @@ class BookingController extends Controller
                 'total_harga' => $totalHarga,
                 'status' => 'pending',
                 'payment_method' => $request->payment_method,
+                'payment_proof' => $paymentProofPath,
+                'payment_status' => $paymentProofPath ? 'pending_verification' : 'unpaid',
             ]);
 
             // Update kuota
@@ -70,14 +79,11 @@ class BookingController extends Controller
             // Handle Midtrans
             $snapToken = null;
             if ($request->payment_method === 'midtrans') {
-                // Set your Merchant Server Key
-                \Midtrans\Config::$serverKey = 'YOUR_MIDTRANS_SERVER_KEY'; // USER TO FILL THIS
-                // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
-                \Midtrans\Config::$isProduction = false;
-                // Set sanitization on (default)
-                \Midtrans\Config::$isSanitized = true;
-                // Set 3DS transaction for credit card to true
-                \Midtrans\Config::$is3ds = true;
+                // Set Midtrans Configuration from .env
+                \Midtrans\Config::$serverKey = config('services.midtrans.server_key');
+                \Midtrans\Config::$isProduction = config('services.midtrans.is_production', false);
+                \Midtrans\Config::$isSanitized = config('services.midtrans.is_sanitized', true);
+                \Midtrans\Config::$is3ds = config('services.midtrans.is_3ds', true);
 
                 $params = [
                     'transaction_details' => [
@@ -130,5 +136,37 @@ class BookingController extends Controller
             ->findOrFail($id);
 
         return response()->json($booking);
+    }
+
+    /**
+     * Upload payment proof for a booking
+     */
+    public function uploadProof(Request $request, $id)
+    {
+        $request->validate([
+            'payment_proof' => 'required|file|mimes:jpeg,png,jpg,pdf|max:5120', // 5MB max
+        ]);
+
+        $booking = Booking::where('user_id', $request->user()->id)
+            ->findOrFail($id);
+
+        // Delete old payment proof if exists
+        if ($booking->payment_proof) {
+            \Storage::disk('public')->delete($booking->payment_proof);
+        }
+
+        // Store new payment proof
+        $path = $request->file('payment_proof')->store('payment_proofs', 'public');
+
+        // Update booking
+        $booking->update([
+            'payment_proof' => $path,
+            'payment_status' => 'pending_verification',
+        ]);
+
+        return response()->json([
+            'message' => 'Bukti pembayaran berhasil diupload',
+            'booking' => $booking->load(['pertunjukan.artistGroup', 'ticketCategory'])
+        ]);
     }
 }

@@ -101,6 +101,12 @@ Route::get('/berita/{id}', [BeritaController::class, 'show']);
 // Banners (public)
 Route::get('/banners', [BannerController::class, 'index']);
 
+// Payment Settings (public - for displaying payment methods)
+Route::get('/payment-settings', [\App\Http\Controllers\Api\PaymentSettingController::class, 'index']);
+Route::get('/payment-settings/qris', [\App\Http\Controllers\Api\PaymentSettingController::class, 'qris']);
+Route::get('/payment-settings/bank-accounts', [\App\Http\Controllers\Api\PaymentSettingController::class, 'bankAccounts']);
+
+
 // Talents routes (using Talent model with English field names)
 Route::get('/talents', [TalentController::class, 'index']);
 Route::get('/talents/top-rated', [TalentController::class, 'getTopRated']);
@@ -173,6 +179,7 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::get('/bookings', [BookingController::class, 'index']);
     Route::post('/bookings', [BookingController::class, 'store']);
     Route::get('/bookings/{id}', [BookingController::class, 'show']);
+    Route::post('/bookings/{id}/upload-proof', [BookingController::class, 'uploadProof']);
     
     // Transaction routes
     Route::get('/transactions', [TransactionController::class, 'index']);

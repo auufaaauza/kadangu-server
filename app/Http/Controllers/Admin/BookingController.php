@@ -44,6 +44,24 @@ class BookingController extends Controller
         return redirect()->back()->with('error', 'Transaction tidak ditemukan!');
     }
 
+    public function validatePayment(Booking $booking)
+    {
+        if (!$booking->payment_proof) {
+            return redirect()->back()->with('error', 'Bukti pembayaran belum diupload!');
+        }
+
+        $booking->update([
+            'payment_status' => 'paid',
+            'status' => 'paid'
+        ]);
+
+        if ($booking->transaction) {
+            $booking->transaction->update(['status' => 'paid']);
+        }
+
+        return redirect()->back()->with('success', 'Pembayaran berhasil divalidasi!');
+    }
+
     public function destroy(Booking $booking)
     {
         $booking->delete();

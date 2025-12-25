@@ -406,6 +406,10 @@
                     <span class="menu-icon"><i class="fas fa-money-bill-wave"></i></span>
                     <span class="menu-text">Transactions</span>
                 </a>
+                <a href="{{ route('admin.payment-settings.index') }}" class="menu-item {{ request()->routeIs('admin.payment-settings.*') ? 'active' : '' }}">
+                    <span class="menu-icon"><i class="fas fa-credit-card"></i></span>
+                    <span class="menu-text">Payment Settings</span>
+                </a>
             </div>
             
             <div class="menu-section">

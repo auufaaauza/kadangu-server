@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\TalentBooking;
-use App\Models\EventTicketOrder;
+use App\Models\Booking;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -54,7 +54,7 @@ class PaymentController extends Controller
                     'status' => 'pending_verification'
                 ]);
             } else {
-                $order = EventTicketOrder::where('id', $request->order_id)
+                $order = \App\Models\Booking::where('id', $request->order_id)
                     ->where('user_id', $request->user()->id)
                     ->first();
 
@@ -67,7 +67,9 @@ class PaymentController extends Controller
 
                 $order->update([
                     'payment_proof' => $path,
-                    'status' => 'pending_verification'
+                    // keep status as pending so admin can review, or change to custom status if needed
+                    // User requirements say "status pending", so we might not change 'status' column, just 'payment_status'
+                    'payment_status' => 'paid', // Mark payment as paid (meaning uploading proof), waiting for admin confirmation
                 ]);
             }
 
