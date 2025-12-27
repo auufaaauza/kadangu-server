@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('bookings', function (Blueprint $table) {
-            $table->string('payment_proof')->nullable()->after('payment_method');
+            $table->string('payment_method')->nullable()->after('status');
+            $table->string('snap_token')->nullable()->after('payment_method');
+            $table->string('payment_proof')->nullable()->after('snap_token');
             $table->string('payment_status')->default('unpaid')->after('payment_proof');
         });
     }
@@ -23,7 +25,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('bookings', function (Blueprint $table) {
-            $table->dropColumn(['payment_proof', 'payment_status']);
+            $table->dropColumn(['payment_method', 'snap_token', 'payment_proof', 'payment_status']);
         });
     }
 };

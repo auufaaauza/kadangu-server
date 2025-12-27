@@ -45,7 +45,7 @@
             name="genre" 
             class="form-input" 
             value="{{ old('genre', $talent->genre ?? '') }}"
-            placeholder="Contoh: Pop, Rock, Jazz, Kontemporer"
+            placeholder="Contoh: Pop, Rock, Jazz, Kontemporer, Modern, Tradisional"
             required
         >
         <span class="form-hint">Genre dapat disesuaikan dengan kategori talent</span>

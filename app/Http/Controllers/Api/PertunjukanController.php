@@ -13,7 +13,7 @@ class PertunjukanController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Pertunjukan::with('artistGroup')->where('status', 'active');
+        $query = Pertunjukan::with(['artistGroup', 'ticketCategories'])->where('status', 'active');
 
         // Search by judul or lokasi
         if ($request->has('search')) {
